@@ -37,6 +37,9 @@ Diese README-Datei bietet einen umfassenden Überblick über das Projekt, die ei
 - **Trading Pairs Modul**  
   Abfrage und Anzeige der verfügbaren Handelspaare im perpetual Futures Bereich.
   
+- **Parser Modul**  
+  Verarbeitung und Umwandlung der rohen Trading-Daten in ein einheitliches Format.
+  
 - **Trading Strategien**  
   Sammlung von Handelsstrategien und Indikatoren in separaten, parameterisierten Modulen.  
   Ermöglicht die flexible Kombination verschiedener Indikatoren (z. B. MACD, RSI), bei denen alle Parameter als Funktionsargumente übergeben werden.
@@ -49,6 +52,7 @@ Diese README-Datei bietet einen umfassenden Überblick über das Projekt, die ei
 AlgotradingProject/
 ├── README.md                 # Projektbeschreibung, Zielsetzungen, Setup-Anleitung
 ├── requirements.txt          # Abhängigkeiten (z. B. Supabase CLI, Github CLI)
+├── .env                      # Umgebungsvariablen und sensible Daten (nicht im Git-Repository)
 ├── config/                   # Konfigurationsdateien für Bitget, KuCoin & Supabase
 │   ├── bitget_config.json
 │   ├── kucoin_config.json
@@ -69,12 +73,12 @@ AlgotradingProject/
 │   ├── Monitoring/           # Überwachung (mit Streamlit) und Visualisierung
 │   │   ├── Monitoring_Bitget.py
 │   │   └── Monitoring_KuCoin.py
-│   └── Trading_Pairs/        # Abfrage der verfügbaren Handelspaare
-│       ├── Trading_Pairs_Bitget.py
-│       └── Trading_Pairs_KuCoin.py
-├── parser/                   # Parser-Module zur Umwandlung der rohen Trading-Daten
-│   ├── Parser_Raw_Data_Bitget.py
-│   └── Parser_Raw_Data_KuCoin.py
+│   ├── Trading_Pairs/        # Abfrage der verfügbaren Handelspaare
+│   │   ├── Trading_Pairs_Bitget.py
+│   │   └── Trading_Pairs_KuCoin.py
+│   └── Parser/               # Parser-Module zur Umwandlung der rohen Trading-Daten
+│       ├── Parser_Raw_Data_Bitget.py
+│       └── Parser_Raw_Data_KuCoin.py
 ├── strategies/               # Sammlung von Handelsstrategien und Indikatoren
 │   ├── indicator_macd.py     # Beispiel: MACD-Indikator
 │   ├── indicator_rsi.py      # Beispiel: RSI-Indikator
@@ -88,5 +92,10 @@ AlgotradingProject/
 │   ├── test_candle_aggregator.py
 │   ├── test_account_info.py
 │   └── ... 
+├── examples/                 # Beispielcode und Tutorials
+│   ├── websocket_example.py
+│   └── strategy_example.py
 └── docs/                     # Projektdokumentation und weitere Unterlagen
+    ├── README_Github.md      # GitHub CLI-Befehle und Git-Workflow
+    ├── README_General.md     # Diese Datei - Projektübersicht
     └── architecture.md       # Detaillierte Architekturübersicht

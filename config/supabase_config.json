@@ -1,0 +1,14 @@
+{
+    "supabase_url": "YOUR_SUPABASE_URL",
+    "supabase_key": "YOUR_SUPABASE_KEY",
+    "tables": {
+        "raw_data": "trading_raw_data",
+        "candles": "trading_candles",
+        "trades": "trading_trades",
+        "account_info": "account_info",
+        "monitoring": "monitoring_metrics"
+    },
+    "batch_size": 100,
+    "max_retries": 3,
+    "retry_delay": 1
+} 
