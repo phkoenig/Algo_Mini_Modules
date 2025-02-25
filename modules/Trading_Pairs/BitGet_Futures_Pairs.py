@@ -10,6 +10,7 @@ Functions:
     get_coin_futures_pairs(): Retrieves all Coin-margined futures pairs
     get_all_futures_pairs(): Retrieves both USDT-M and Coin-M futures pairs
     filter_active_pairs(pairs): Filters only active trading pairs
+    get_active_symbols(): Returns a simple list of active trading pair symbols
     save_pairs_to_json(pairs, filename): Saves pairs data to a JSON file
 """
 import os
@@ -109,6 +110,56 @@ def filter_active_pairs(pairs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return [pair for pair in pairs if pair.get("status") == "normal"]
 
 
+def get_active_symbols(include_inactive: bool = False) -> List[str]:
+    """
+    Get a simple list of active trading pair symbols
+    
+    Args:
+        include_inactive (bool, optional): Whether to include inactive pairs. Defaults to False.
+        
+    Returns:
+        List[str]: List of trading pair symbols
+    """
+    usdt_futures, coin_futures = get_all_futures_pairs()
+    
+    if not include_inactive:
+        usdt_futures = filter_active_pairs(usdt_futures)
+        coin_futures = filter_active_pairs(coin_futures)
+    
+    # Extract symbols
+    symbols = [pair.get("symbol") for pair in usdt_futures + coin_futures]
+    return sorted(symbols)
+
+
+def get_active_symbols_with_info(include_inactive: bool = False) -> List[Dict[str, str]]:
+    """
+    Get a list of active trading pairs with basic information
+    
+    Args:
+        include_inactive (bool, optional): Whether to include inactive pairs. Defaults to False.
+        
+    Returns:
+        List[Dict[str, str]]: List of dictionaries with symbol, base_coin, quote_coin
+    """
+    usdt_futures, coin_futures = get_all_futures_pairs()
+    
+    if not include_inactive:
+        usdt_futures = filter_active_pairs(usdt_futures)
+        coin_futures = filter_active_pairs(coin_futures)
+    
+    # Extract relevant information
+    result = []
+    for pair in usdt_futures + coin_futures:
+        result.append({
+            "symbol": pair.get("symbol"),
+            "base_coin": pair.get("baseCoin"),
+            "quote_coin": pair.get("quoteCoin"),
+            "type": "USDT-M" if pair.get("productType") == USDT_FUTURES_TYPE else "Coin-M"
+        })
+    
+    return sorted(result, key=lambda x: x["symbol"])
+
+
 def save_pairs_to_json(usdt_pairs: List[Dict[str, Any]], 
                       coin_pairs: List[Dict[str, Any]], 
                       filename: str = "bitget_futures_pairs.json") -> bool:
@@ -159,15 +210,7 @@ def get_simplified_pairs_list(include_inactive: bool = False) -> List[str]:
     Returns:
         List[str]: List of trading pair symbols
     """
-    usdt_futures, coin_futures = get_all_futures_pairs()
-    
-    if not include_inactive:
-        usdt_futures = filter_active_pairs(usdt_futures)
-        coin_futures = filter_active_pairs(coin_futures)
-    
-    # Extract symbols
-    symbols = [pair.get("symbol") for pair in usdt_futures + coin_futures]
-    return sorted(symbols)
+    return get_active_symbols(include_inactive)
 
 
 def print_summary(usdt_futures: List[Dict[str, Any]], coin_futures: List[Dict[str, Any]]) -> None:
@@ -193,27 +236,27 @@ def main():
     """
     print("Fetching BitGet Futures Trading Pairs...")
     
-    # Get all futures pairs
+    # Get simple list of active symbols
+    active_symbols = get_active_symbols(include_inactive=False)
+    
+    print("\nActive Futures Trading Pairs:")
+    if active_symbols:
+        for symbol in active_symbols:
+            print(symbol)
+        print(f"\nTotal active pairs: {len(active_symbols)}")
+    else:
+        print("No active trading pairs found.")
+        
+        # If no active pairs, show all pairs
+        all_symbols = get_active_symbols(include_inactive=True)
+        print("\nAll Futures Trading Pairs (including inactive):")
+        for symbol in all_symbols:
+            print(symbol)
+        print(f"\nTotal pairs: {len(all_symbols)}")
+    
+    # Get all pairs for summary
     usdt_futures, coin_futures = get_all_futures_pairs()
-    
-    # Print active pairs
-    active_usdt = filter_active_pairs(usdt_futures)
-    active_coin = filter_active_pairs(coin_futures)
-    
-    print(f"\nActive USDT-M Futures ({len(active_usdt)} pairs):")
-    for pair in active_usdt:
-        print(f"- {pair.get('symbol')} ({pair.get('baseCoin')}/{pair.get('quoteCoin')})")
-    
-    print(f"\nActive Coin-M Futures ({len(active_coin)} pairs):")
-    for pair in active_coin:
-        print(f"- {pair.get('symbol')} ({pair.get('baseCoin')}/{pair.get('quoteCoin')})")
-    
-    # Print summary
     print_summary(usdt_futures, coin_futures)
-    
-    # Save to JSON
-    if save_pairs_to_json(usdt_futures, coin_futures):
-        print(f"\nData saved to bitget_futures_pairs.json")
 
 
 if __name__ == "__main__":
