@@ -1,0 +1,24 @@
+# Exchange API Dependencies
+ccxt==4.2.15
+websocket-client>=1.6.4
+requests>=2.31.0
+
+# Data Processing
+pandas==2.2.0
+numpy==1.26.4
+
+# Technical Analysis
+ta==0.11.0
+
+# Database
+supabase>=2.3.0
+python-dotenv>=1.0.0
+psycopg2-binary>=2.9.9  # PostgreSQL Adapter
+
+# GUI & Notifications
+pystray>=0.19.5
+Pillow>=10.2.0  # For icon handling
+win10toast-click>=0.1.2  # Windows notifications
+
+# Type Hints
+typing-extensions>=4.8.0 
