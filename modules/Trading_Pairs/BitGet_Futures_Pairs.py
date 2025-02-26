@@ -11,14 +11,11 @@ Functions:
     get_all_futures_pairs(): Retrieves both USDT-M and Coin-M futures pairs
     filter_active_pairs(pairs): Filters only active trading pairs
     get_active_symbols(): Returns a simple list of active trading pair symbols
-    save_pairs_to_json(pairs, filename): Saves pairs data to a JSON file
 """
 import os
 import sys
-import json
 import requests
-from datetime import datetime
-from typing import List, Dict, Any, Tuple, Optional
+from typing import List, Dict, Any, Tuple
 
 # Add project root to path if running as script
 if __name__ == "__main__":
@@ -158,59 +155,6 @@ def get_active_symbols_with_info(include_inactive: bool = False) -> List[Dict[st
         })
     
     return sorted(result, key=lambda x: x["symbol"])
-
-
-def save_pairs_to_json(usdt_pairs: List[Dict[str, Any]], 
-                      coin_pairs: List[Dict[str, Any]], 
-                      filename: str = "bitget_futures_pairs.json") -> bool:
-    """
-    Save pairs data to a JSON file
-    
-    Args:
-        usdt_pairs (List[Dict[str, Any]]): USDT-M futures pairs
-        coin_pairs (List[Dict[str, Any]]): Coin-M futures pairs
-        filename (str, optional): Output filename. Defaults to "bitget_futures_pairs.json".
-        
-    Returns:
-        bool: True if successful, False otherwise
-    """
-    try:
-        # Get current timestamp from BitGet API
-        timestamp = None
-        try:
-            time_response = requests.get(f"{BITGET_API_BASE}/time")
-            timestamp = time_response.json().get("data")
-        except:
-            # Use local time if BitGet time API fails
-            timestamp = int(datetime.now().timestamp() * 1000)
-        
-        all_data = {
-            "usdt_futures": usdt_pairs,
-            "coin_futures": coin_pairs,
-            "timestamp": timestamp,
-            "fetch_time": datetime.now().isoformat()
-        }
-        
-        with open(filename, "w") as f:
-            json.dump(all_data, f, indent=2)
-        
-        return True
-    except Exception as e:
-        print(f"Error saving data to {filename}: {e}")
-        return False
-
-
-def get_simplified_pairs_list(include_inactive: bool = False) -> List[str]:
-    """
-    Get a simplified list of all futures trading pairs symbols
-    
-    Args:
-        include_inactive (bool, optional): Whether to include inactive pairs. Defaults to False.
-        
-    Returns:
-        List[str]: List of trading pair symbols
-    """
-    return get_active_symbols(include_inactive)
 
 
 def print_summary(usdt_futures: List[Dict[str, Any]], coin_futures: List[Dict[str, Any]]) -> None:

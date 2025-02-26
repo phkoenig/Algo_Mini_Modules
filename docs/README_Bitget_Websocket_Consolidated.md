@@ -1,17 +1,30 @@
-# Leitfaden zur Integration des Bitget WebSockets für Trading-Daten
+# Bitget WebSocket API - Dokumentation und Implementierungsleitfaden
 
-_Diese Guideline bietet eine detaillierte Anleitung zur Nutzung der Bitget WebSocket-API v2 mit Python, speziell optimiert für die Implementierung in KI-Tradingstrategien._
+Dieses Dokument bietet eine umfassende Anleitung zur Integration der Bitget WebSocket API für den Empfang von Echtzeit-Marktdaten, speziell für Futures-Märkte.
 
-## 1. Vorbereitung der Entwicklungsumgebung
+## Übersicht
 
-### 1.1 Installation der benötigten Python-Bibliotheken
+Das BitgetWebSocket-Modul ermöglicht die Verbindung mit der Bitget Börse über WebSocket-Schnittstellen, um Echtzeit-Marktdaten zu empfangen.
+
+### Hauptfunktionen:
+
+- Verbindung mit öffentlichen und privaten Kanälen
+- Automatische Reconnect-Logik bei Verbindungsabbrüchen
+- Callback-System für benutzerdefinierte Datenverarbeitung
+- Datenpufferung in einem DataFrame für einfache Analyse
+
+## Vorbereitung der Entwicklungsumgebung
+
+### Installation der benötigten Python-Bibliotheken
+
 ```bash
 pip install websocket-client pandas python-dotenv
 ```
 
 Die `websocket-client`-Bibliothek wird für die WebSocket-Verbindung verwendet, während `pandas` für die Datenverarbeitung und `python-dotenv` für die sichere Verwaltung von API-Schlüsseln eingesetzt wird.
 
-### 1.2 API-Schlüsselgenerierung
+### API-Schlüsselgenerierung
+
 1. Bitget-Konto → API-Management
 2. **Berechtigungen**: 
    - Lese-/Schreibzugriff für WebSocket
@@ -23,9 +36,10 @@ BITGET_SECRET_KEY="sk_..."
 BITGET_PASSPHRASE="..."  # Bei Schlüsselerstellung festgelegt
 ```
 
-## 2. WebSocket-Architektur für Bitget API v2
+## WebSocket-Architektur für Bitget API v2
 
-### 2.1 Verbindungsparameter
+### Verbindungsparameter
+
 | Parameter             | Wert                          |
 |-----------------------|-------------------------------|
 | Public Channel        | `wss://ws.bitget.com/v2/ws/public` |
@@ -34,9 +48,10 @@ BITGET_PASSPHRASE="..."  # Bei Schlüsselerstellung festgelegt
 | Ping-Format           | Einfacher String: `"ping"`    |
 | Max. Nachrichtenrate  | 10/s                          |
 
-### 2.2 Wichtige Parameter für Subscription-Requests
+### Wichtige Parameter für Subscription-Requests
 
 #### Korrekte Parameter für USDT-M Futures (API v2)
+
 | Parameter   | Wert            | Beschreibung                                |
 |-------------|-----------------|---------------------------------------------|
 | instType    | "USDT-FUTURES"  | Instrumententyp für USDT-M Futures          |
@@ -44,6 +59,7 @@ BITGET_PASSPHRASE="..."  # Bei Schlüsselerstellung festgelegt
 | instId      | "BTCUSDT"       | Symbol ohne Suffix (kein "_UMCBL" anhängen) |
 
 #### Beispiel für einen korrekten Subscription-Request
+
 ```json
 {
   "op": "subscribe",
@@ -57,7 +73,8 @@ BITGET_PASSPHRASE="..."  # Bei Schlüsselerstellung festgelegt
 }
 ```
 
-### 2.3 Verbindungslebenszyklus
+### Verbindungslebenszyklus
+
 ```
 graph TD
 A[Verbindungsaufbau] --> B[Kanalabonnement]
@@ -69,9 +86,39 @@ C --> F[Fehler?]
 F --> G[Reconnect]
 ```
 
-## 3. Vollständige Implementierung eines WebSocket-Clients
+## Einfaches Beispiel
 
-### 3.1 Basis-Skriptstruktur
+```python
+from modules.Websocket_Raw_Data.bitget_websocket import BitgetWebSocket
+from pybitget.stream import SubscribeReq
+
+# Initialisiere den WebSocket-Client
+ws = BitgetWebSocket(
+    api_key="bk_...",
+    api_secret="sk_...",
+    passphrase="...",
+    verbose=True
+)
+
+# Definiere einen Callback für eingehende Nachrichten
+def process_data(data):
+    print(f"Neue Daten empfangen: {data}")
+
+# Registriere den Callback
+ws.add_callback(process_data)
+
+# Definiere die zu abonnierenden Kanäle
+channels = [
+    SubscribeReq("mc", "ticker", "BTCUSDT"),  # Echtzeit-Preise
+    SubscribeReq("SP", "candle1m", "ETHUSDT")  # 1-Minuten-Kerzen
+]
+
+# Starte die WebSocket-Verbindung
+ws.run_forever(channels)
+```
+
+## Vollständige Implementierung eines WebSocket-Clients
+
 ```python
 import os
 import sys
@@ -270,7 +317,8 @@ class BitgetWebSocket:
         time.sleep(1)
 ```
 
-### 3.2 Hauptfunktion zum Ausführen des WebSocket-Clients
+## Hauptfunktion zum Ausführen des WebSocket-Clients
+
 ```python
 def run_websocket(symbol: str, channels: List[str] = None, timeout: int = None):
     """
@@ -346,7 +394,7 @@ if __name__ == "__main__":
     run_websocket("BTCUSDT", ["ticker"], timeout=60)
 ```
 
-### 3.3 Beispiel für die Datenstruktur der empfangenen Nachrichten
+## Beispiel für die Datenstruktur der empfangenen Nachrichten
 
 Für den Ticker-Kanal sieht die Antwort wie folgt aus:
 ```json
@@ -387,9 +435,9 @@ Für den Ticker-Kanal sieht die Antwort wie folgt aus:
 }
 ```
 
-## 4. Häufige Fehler und deren Behebung
+## Häufige Fehler und deren Behebung
 
-### 4.1 "Param error" (Code 30016)
+### "Param error" (Code 30016)
 Dieser Fehler tritt auf, wenn die Parameter im Subscription-Request nicht korrekt sind.
 
 #### Häufige Ursachen und Lösungen:
@@ -405,7 +453,7 @@ Dieser Fehler tritt auf, wenn die Parameter im Subscription-Request nicht korrek
    - Falsch: `{"ping": ""}`
    - Richtig: `"ping"` (einfacher String)
 
-### 4.2 Verbindungsabbrüche
+### Verbindungsabbrüche
 Wenn die Verbindung häufig abbricht, überprüfe folgende Punkte:
 
 1. **Ping-Intervall**: Stelle sicher, dass alle 30 Sekunden ein Ping gesendet wird
@@ -413,9 +461,9 @@ Wenn die Verbindung häufig abbricht, überprüfe folgende Punkte:
 3. **Netzwerkstabilität**: Überprüfe deine Internetverbindung
 4. **Reconnect-Mechanismus**: Implementiere einen robusten Reconnect-Mechanismus
 
-## 5. Datenverarbeitung für Trading-Strategien
+## Datenverarbeitung für Trading-Strategien
 
-### 5.1 Extraktion wichtiger Daten aus Ticker-Nachrichten
+### Extraktion wichtiger Daten aus Ticker-Nachrichten
 ```python
 def process_ticker_data(message):
     """
@@ -450,7 +498,7 @@ def process_ticker_data(message):
         return None
 ```
 
-### 5.2 Speichern der Daten in einer CSV-Datei
+### Speichern der Daten in einer CSV-Datei
 ```python
 import pandas as pd
 from datetime import datetime
@@ -482,7 +530,7 @@ def save_to_csv(data_dict, filename=None):
     logger.info(f"Daten in {filename} gespeichert")
 ```
 
-## 6. Vollständiges Beispiel mit Datenverarbeitung
+## Vollständiges Beispiel mit Datenverarbeitung
 
 ```python
 # Modifiziere die on_message-Methode in der BitgetWebSocket-Klasse
@@ -509,7 +557,7 @@ def on_message(self, ws, message):
         logger.error(f"Fehler bei der Verarbeitung der Nachricht: {e}")
 ```
 
-## 7. Zusammenfassung der wichtigsten Punkte
+## Zusammenfassung der wichtigsten Punkte
 
 1. **Korrekte WebSocket-URL**: `wss://ws.bitget.com/v2/ws/public` für öffentliche Kanäle
 2. **Korrekte Parameter**:
@@ -520,10 +568,26 @@ def on_message(self, ws, message):
 5. **Reconnect-Mechanismus**: Implementiere einen robusten Reconnect-Mechanismus
 6. **Fehlerbehandlung**: Behandle Verbindungsabbrüche und Fehler angemessen
 
-## 8. Beispielkommando zum Starten des WebSocket-Clients
+## Kommandozeilenbeispiel
+
+Um den WebSocket-Client zu starten:
 
 ```bash
 python -m modules.Websocket_Raw_Data.Bitget_Websocket_Raw_Data BTCUSDT --timeout 60
 ```
 
-_Diese Guideline wird kontinuierlich aktualisiert - letzte Überprüfung: 26.02.2025_
+## Installation
+
+Installiere die benötigten Abhängigkeiten mit:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Weitere Informationen
+
+Für detaillierte Informationen zur Bitget WebSocket API siehe die [offizielle Dokumentation](https://www.bitget.com/api-doc/common/websocket-intro).
+
+---
+
+*Diese Dokumentation wird kontinuierlich aktualisiert. Letzter Review: 26.02.2025* 

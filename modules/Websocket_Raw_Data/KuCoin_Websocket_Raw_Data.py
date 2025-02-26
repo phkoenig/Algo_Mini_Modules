@@ -68,6 +68,9 @@ from dotenv import load_dotenv
 root_dir = Path(__file__).resolve().parents[2]
 sys.path.append(str(root_dir))
 
+# Importiere das Trading_Pairs Modul
+from modules.Trading_Pairs.KuCoin_Futures_Pairs import get_active_symbols
+
 # Logging konfigurieren
 logging.basicConfig(
     level=logging.INFO,
@@ -415,11 +418,68 @@ def run_websocket(symbol: str, market_type: str = "futures", channels: List[str]
         print("\nKuCoin WebSocket beendet.")
 
 
+def is_valid_symbol(symbol: str, market_type: str = "futures") -> bool:
+    """
+    Überprüft, ob ein Symbol gültig ist.
+    
+    Args:
+        symbol: Das zu überprüfende Symbol
+        market_type: Der Markttyp (futures oder spot)
+    
+    Returns:
+        bool: True, wenn das Symbol gültig ist, sonst False
+    """
+    if market_type == "futures":
+        # Hole die Liste der verfügbaren Symbole für Futures
+        available_symbols = get_active_symbols()
+        
+        # Überprüfe, ob das Symbol in der Liste ist
+        return symbol in available_symbols
+    else:
+        # Für Spot-Markt haben wir noch keine Validierungsfunktion
+        # Hier könnte in Zukunft eine ähnliche Funktion für Spot-Symbole implementiert werden
+        logger.warning("Symbolvalidierung für Spot-Markt nicht implementiert. Symbol wird ohne Validierung verwendet.")
+        return True
+
+
+def get_user_input_symbol(market_type: str = "futures") -> str:
+    """
+    Fordert den Benutzer zur Eingabe eines Symbols auf und überprüft die Gültigkeit.
+    
+    Args:
+        market_type: Der Markttyp (futures oder spot)
+        
+    Returns:
+        str: Das gültige Symbol
+    """
+    if market_type == "futures":
+        # Hole die Liste der verfügbaren Symbole für Futures
+        available_symbols = get_active_symbols()
+        
+        while True:
+            print("\nVerfügbare Symbole (Beispiele):")
+            # Zeige die ersten 10 Symbole an
+            for i, symbol in enumerate(available_symbols[:10]):
+                print(f"  {i+1}. {symbol}")
+            print(f"  ... und {len(available_symbols) - 10} weitere")
+            
+            symbol = input("\nBitte gib ein gültiges Symbol ein (z.B. BTCUSDT): ")
+            
+            if symbol in available_symbols:
+                return symbol
+            else:
+                print(f"Ungültiges Symbol: {symbol}")
+                print("Bitte gib ein gültiges Symbol ein.")
+    else:
+        # Für Spot-Markt haben wir noch keine Validierungsfunktion
+        return input("\nBitte gib ein Symbol ein (z.B. BTC-USDT): ")
+
+
 def main():
     """Hauptfunktion"""
     # Parse Kommandozeilenargumente
     parser = argparse.ArgumentParser(description="KuCoin WebSocket Raw Data")
-    parser.add_argument("symbol", type=str, help="Das Symbol, für das Daten empfangen werden sollen (z.B. BTCUSDT)")
+    parser.add_argument("symbol", nargs="?", type=str, help="Das Symbol, für das Daten empfangen werden sollen (z.B. BTCUSDT)")
     parser.add_argument("--market", type=str, default="futures", choices=["futures", "spot"], 
                         help="Der Markttyp (futures oder spot)")
     parser.add_argument("--channels", type=str, nargs="+", default=["ticker"], 
@@ -428,8 +488,20 @@ def main():
                         help="Timeout in Sekunden, nach dem das Skript beendet wird")
     args = parser.parse_args()
     
+    # Symbol aus Kommandozeilenargumenten oder Benutzereingabe
+    symbol = args.symbol
+    
+    if symbol:
+        # Überprüfe, ob das Symbol gültig ist
+        if not is_valid_symbol(symbol, args.market):
+            print(f"Ungültiges Symbol: {symbol}")
+            symbol = get_user_input_symbol(args.market)
+    else:
+        # Fordere den Benutzer zur Eingabe eines Symbols auf
+        symbol = get_user_input_symbol(args.market)
+    
     # Starte den WebSocket-Client
-    run_websocket(args.symbol, args.market, args.channels, args.timeout)
+    run_websocket(symbol, args.market, args.channels, args.timeout)
 
 
 if __name__ == "__main__":
