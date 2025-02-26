@@ -2,6 +2,7 @@
 ccxt==4.2.15
 websocket-client>=1.6.4
 requests>=2.31.0
+python-bitget>=1.0.8  # Bitget API Client
 
 # Data Processing
 pandas==2.2.0
