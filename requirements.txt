@@ -16,10 +16,21 @@ supabase>=2.3.0
 python-dotenv>=1.0.0
 psycopg2-binary>=2.9.9  # PostgreSQL Adapter
 
-# GUI & Notifications
+# GUI & Visualizations
 pystray>=0.19.5
 Pillow>=10.2.0  # For icon handling
 win10toast-click>=0.1.2  # Windows notifications
+streamlit>=1.30.0  # Streamlit for web GUI
+plotly>=5.18.0  # Interactive charts
+matplotlib>=3.8.0  # Additional plotting capabilities
+
+# Threading & Async
+asyncio>=3.4.3
+aiohttp>=3.9.1
 
 # Type Hints
-typing-extensions>=4.8.0 
+typing-extensions>=4.8.0
+
+# Utilities
+pytz>=2023.3  # Timezone support
+tqdm>=4.66.1  # Progress bars 
