@@ -54,9 +54,10 @@ class BitGetAccountInfo:
         self.base_url = "https://api.bitget.com"
         
         # API Endpoints
-        self.account_endpoint = "/api/mix/v1/account/account"
-        self.positions_endpoint = "/api/mix/v1/position/allPosition"
-        self.account_bills_endpoint = "/api/mix/v1/account/accountBill"
+        self.futures_account_endpoint = "/api/mix/v1/account/account"
+        self.futures_positions_endpoint = "/api/mix/v1/position/allPosition"
+        self.futures_bills_endpoint = "/api/mix/v1/account/accountBill"
+        self.spot_accounts_endpoint = "/api/spot/v1/account/assets"
         
         logger.info("BitGet Client erfolgreich initialisiert")
     
@@ -120,7 +121,7 @@ class BitGetAccountInfo:
                 "symbol": symbol,
                 "marginCoin": marginCoin
             }
-            account_info = self._send_request("GET", self.account_endpoint, params)
+            account_info = self._send_request("GET", self.futures_account_endpoint, params)
             
             if account_info.get("code") == "00000":
                 logger.info("Successfully retrieved account overview")
@@ -139,7 +140,7 @@ class BitGetAccountInfo:
             params = {
                 "productType": productType
             }
-            positions = self._send_request("GET", self.positions_endpoint, params)
+            positions = self._send_request("GET", self.futures_positions_endpoint, params)
             
             if positions.get("code") == "00000":
                 logger.info("Successfully retrieved positions")
@@ -170,7 +171,7 @@ class BitGetAccountInfo:
             if endTime:
                 params["endTime"] = endTime
                 
-            bills = self._send_request("GET", self.account_bills_endpoint, params)
+            bills = self._send_request("GET", self.futures_bills_endpoint, params)
             
             if bills.get("code") == "00000":
                 logger.info("Successfully retrieved account bills")
@@ -183,13 +184,38 @@ class BitGetAccountInfo:
             logger.error(f"Error in get_account_bills: {str(e)}")
             return {}
 
+    def get_spot_accounts(self) -> Dict:
+        """Get spot account balances"""
+        try:
+            accounts = self._send_request("GET", self.spot_accounts_endpoint)
+            
+            if accounts.get("code") == "00000":
+                logger.info("Successfully retrieved spot accounts")
+                return accounts["data"]
+            else:
+                logger.error(f"Error getting spot accounts: {accounts}")
+                return {}
+                
+        except Exception as e:
+            logger.error(f"Error in get_spot_accounts: {str(e)}")
+            return {}
+
     def display_account_summary(self):
         """Display a summary of the account information"""
         try:
+            # Get spot account balances
+            spot_accounts = self.get_spot_accounts()
+            if spot_accounts:
+                print("\n=== Spot Account Overview ===")
+                for account in spot_accounts:
+                    balance = float(account.get('available', '0'))
+                    if balance > 0:
+                        print(f"{account.get('coinName', 'N/A')}: {balance} (Available: {account.get('available', 'N/A')}, Frozen: {account.get('frozen', 'N/A')})")
+
             # Get account overview for BTC-USDT
             btc_account = self.get_account_overview("BTCUSDT_UMCBL", "USDT")
             if btc_account:
-                print("\n=== Account Overview (BTC-USDT) ===")
+                print("\n=== Futures Account Overview (BTC-USDT) ===")
                 print(f"Available Margin: {btc_account.get('available', 'N/A')} USDT")
                 print(f"Total Margin: {btc_account.get('totalMargin', 'N/A')} USDT")
                 print(f"Margin Ratio: {btc_account.get('marginRatio', 'N/A')}%")
@@ -199,7 +225,7 @@ class BitGetAccountInfo:
             # Get all positions
             positions = self.get_positions()
             if positions:
-                print("\n=== Current Positions ===")
+                print("\n=== Current Futures Positions ===")
                 for pos in positions:
                     print(f"\nSymbol: {pos.get('symbol', 'N/A')}")
                     print(f"Position Size: {pos.get('total', 'N/A')}")

@@ -14,12 +14,14 @@ Das BitGet Account Info Modul (`modules/Account_Info/BitGet_Account_Info.py`) bi
 - Anzeigen aller aktiven Positionen
 - Abrufen von Account-Transaktionshistorie
 - Formatierte Ausgabe wichtiger Kontoinformationen
+- Spot und Futures Account Informationen
 
 #### Hauptfunktionen
 ```python
 get_account_overview(symbol: str = "BTCUSDT_UMCBL", marginCoin: str = "USDT") -> Dict
 get_positions(productType: str = "umcbl") -> Dict
 get_account_bills(symbol: str, marginCoin: str, startTime: Optional[str], endTime: Optional[str], limit: int) -> Dict
+get_spot_accounts() -> Dict
 display_account_summary()
 ```
 
@@ -45,18 +47,64 @@ Das Modul erwartet folgende Umgebungsvariablen:
 
 #### API Endpoints
 Das Modul nutzt folgende BitGet API Endpoints:
-- `/api/mix/v1/account/account`: Account-Übersicht
-- `/api/mix/v1/position/allPosition`: Aktive Positionen
+- `/api/mix/v1/account/account`: Futures Account-Übersicht
+- `/api/mix/v1/position/allPosition`: Aktive Futures Positionen
 - `/api/mix/v1/account/accountBill`: Transaktionshistorie
+- `/api/spot/v1/account/assets`: Spot Account Balances
 
 ### KuCoin Account Info
-*Coming soon*
+Das KuCoin Account Info Modul (`modules/Account_Info/KuCoin_Account_Info.py`) bietet folgende Funktionalitäten:
+
+#### Features
+- Abrufen von Spot Account Informationen
+- Futures Account Übersicht
+- Anzeigen aller aktiven Positionen
+- Getrennte APIs für Spot und Futures
+- Formatierte Ausgabe wichtiger Kontoinformationen
+
+#### Hauptfunktionen
+```python
+get_spot_accounts(currency: Optional[str] = None) -> Dict
+get_futures_overview(currency: str = "USDT") -> Dict
+get_position_details(symbol: str) -> Dict
+get_all_positions() -> Dict
+display_account_summary()
+```
+
+#### Verwendung
+```python
+from modules.Account_Info.KuCoin_Account_Info import KuCoinAccountInfo
+
+# Initialisiere den Client
+client = KuCoinAccountInfo(api_key, secret_key, passphrase)
+
+# Hole Account-Übersicht
+account_info = client.get_account_overview("USDT")
+
+# Zeige alle Informationen formatiert an
+client.display_account_summary()
+```
+
+#### Konfiguration
+Das Modul erwartet folgende Umgebungsvariablen:
+- `KUCOIN_API_KEY`: Dein KuCoin API Key
+- `KUCOIN_SECRET_KEY`: Dein KuCoin Secret Key
+- `KUCOIN_PASSPHRASE`: Dein KuCoin API Passphrase
+
+#### API Endpoints
+Das Modul nutzt folgende KuCoin API Endpoints:
+- Spot API (api.kucoin.com):
+  - `/api/v1/accounts`: Spot Account Balances
+- Futures API (api-futures.kucoin.com):
+  - `/api/v1/account-overview`: Futures Account-Übersicht
+  - `/api/v1/position`: Position Details
+  - `/api/v1/positions`: Alle Positionen
 
 ## Allgemeine Struktur
 Alle Account Info Module folgen dieser grundlegenden Struktur:
 1. Authentifizierung über API Keys
 2. Standardisierte Methoden zum Abrufen von:
-   - Account-Übersicht
+   - Account-Übersicht (Spot & Futures)
    - Positionen
    - Transaktionshistorie
 3. Formatierte Ausgabe der Informationen
@@ -78,10 +126,15 @@ Neue Account Info Module sollten:
 
 ## Changelog
 
+### v1.1.0 (2024-03-16)
+- KuCoin Account Info Modul hinzugefügt
+- BitGet Spot Account Funktionalität hinzugefügt
+- Dokumentation aktualisiert
+
 ### v1.0.0 (2024-03-16)
 - Initiale Version des BitGet Account Info Moduls
 - Implementierung der Hauptfunktionen
-- Dokumentation erstellt 
+- Dokumentation erstellt
 
 # Account Info Modules Documentation
 
