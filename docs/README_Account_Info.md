@@ -82,3 +82,169 @@ Neue Account Info Module sollten:
 - Initiale Version des BitGet Account Info Moduls
 - Implementierung der Hauptfunktionen
 - Dokumentation erstellt 
+
+# Account Info Modules Documentation
+
+This documentation covers the Account Info modules for BitGet and KuCoin exchanges. These modules provide functionality to retrieve account information, positions, and balances from the respective exchanges.
+
+## Available Modules
+
+1. BitGet Account Info (`modules/Account_Info/BitGet_Account_Info.py`)
+2. KuCoin Account Info (`modules/Account_Info/KuCoin_Account_Info.py`)
+
+## Main Functions
+
+### BitGet Account Info
+
+```python
+# Initialize BitGet client
+from modules.Account_Info.BitGet_Account_Info import BitGetAccountInfo
+client = BitGetAccountInfo(api_key, secret_key, passphrase)
+
+# Get account overview
+account_info = client.get_account_overview()
+
+# Get open positions
+positions = client.get_open_positions()
+
+# Display account summary
+client.display_account_summary()
+```
+
+### KuCoin Account Info
+
+```python
+# Initialize KuCoin client
+from modules.Account_Info.KuCoin_Account_Info import KuCoinAccountInfo
+client = KuCoinAccountInfo(api_key, secret_key, passphrase)
+
+# Get account overview for USDT
+account_info = client.get_account_overview("USDT")
+
+# Get position details for a specific symbol
+position = client.get_position_details("BTCUSDTM")
+
+# Get all positions
+positions = client.get_all_positions()
+
+# Display account summary
+client.display_account_summary()
+```
+
+## Configuration
+
+Both modules require API credentials to be set in environment variables:
+
+### BitGet
+```
+BITGET_API_KEY=your_api_key
+BITGET_SECRET_KEY=your_secret_key
+BITGET_PASSPHRASE=your_passphrase
+```
+
+### KuCoin
+```
+KUCOIN_API_KEY=your_api_key
+KUCOIN_SECRET_KEY=your_secret_key
+KUCOIN_PASSPHRASE=your_passphrase
+```
+
+## API Endpoints
+
+### BitGet Endpoints
+- Account Overview: `/api/mix/v1/account/accounts`
+- Open Positions: `/api/mix/v1/position/allPosition`
+- Account Bills: `/api/mix/v1/account/accountBill`
+
+### KuCoin Endpoints
+- Account Overview: `/api/v1/account-overview`
+- Position Details: `/api/v1/position`
+- All Positions: `/api/v1/positions`
+
+## Best Practices
+
+1. **API Key Management**
+   - Store API keys securely in environment variables
+   - Never hardcode API keys in the code
+   - Use API keys with minimum required permissions
+
+2. **Error Handling**
+   - All methods include comprehensive error handling
+   - Failed requests return empty dictionaries
+   - Errors are logged with detailed information
+
+3. **Rate Limiting**
+   - Be aware of exchange rate limits
+   - Implement appropriate delays between requests
+   - Monitor response headers for rate limit information
+
+## Example Usage
+
+```python
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+
+# Initialize clients
+bitget_client = BitGetAccountInfo(
+    os.getenv("BITGET_API_KEY"),
+    os.getenv("BITGET_SECRET_KEY"),
+    os.getenv("BITGET_PASSPHRASE")
+)
+
+kucoin_client = KuCoinAccountInfo(
+    os.getenv("KUCOIN_API_KEY"),
+    os.getenv("KUCOIN_SECRET_KEY"),
+    os.getenv("KUCOIN_PASSPHRASE")
+)
+
+# Display account summaries
+print("=== BitGet Account ===")
+bitget_client.display_account_summary()
+
+print("\n=== KuCoin Account ===")
+kucoin_client.display_account_summary()
+```
+
+## Response Data Structure
+
+### BitGet Account Overview
+```python
+{
+    "marginCoin": "USDT",
+    "locked": "0",
+    "available": "100.0000",
+    "crossMaxAvailable": "100.0000",
+    "fixedMaxAvailable": "100.0000",
+    "maxTransferOut": "100.0000",
+    "equity": "100.0000",
+    "usdtEquity": "100.0000"
+}
+```
+
+### KuCoin Account Overview
+```python
+{
+    "accountEquity": 100.0000,
+    "unrealisedPNL": 0,
+    "marginBalance": 100.0000,
+    "positionMargin": 0,
+    "orderMargin": 0,
+    "availableBalance": 100.0000,
+    "riskRatio": "0"
+}
+```
+
+## Error Codes
+
+Both modules handle common error codes and provide appropriate error messages:
+
+- 200000: Success
+- 400: Bad Request
+- 401: Unauthorized
+- 429: Too Many Requests
+- 500: Internal Server Error
+
+For detailed error handling, refer to the respective exchange API documentation. 
