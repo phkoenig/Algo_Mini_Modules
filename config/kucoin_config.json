@@ -1,0 +1,16 @@
+{
+    "api_key": "YOUR_KUCOIN_API_KEY",
+    "api_secret": "YOUR_KUCOIN_API_SECRET",
+    "passphrase": "YOUR_KUCOIN_PASSPHRASE",
+    "futures_pairs": [
+        "XBTUSDTM",
+        "ETHUSDTM",
+        "SOLUSDTM"
+    ],
+    "leverage": 5,
+    "max_position_size_usd": 100,
+    "websocket": {
+        "endpoint": "wss://ws-api-futures.kucoin.com/endpoint",
+        "ping_interval": 30
+    }
+} 
