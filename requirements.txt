@@ -1,0 +1,36 @@
+# Exchange API Dependencies
+ccxt==4.2.15
+websocket-client>=1.6.4
+requests>=2.31.0
+python-bitget>=1.0.8  # Bitget API Client
+
+# Data Processing
+pandas==2.2.0
+numpy==1.26.4
+
+# Technical Analysis
+ta==0.11.0
+
+# Database
+supabase>=2.3.0
+python-dotenv>=1.0.0
+psycopg2-binary>=2.9.9  # PostgreSQL Adapter
+
+# GUI & Visualizations
+pystray>=0.19.5
+Pillow>=10.2.0  # For icon handling
+win10toast-click>=0.1.2  # Windows notifications
+streamlit>=1.30.0  # Streamlit for web GUI
+plotly>=5.18.0  # Interactive charts
+matplotlib>=3.8.0  # Additional plotting capabilities
+
+# Threading & Async
+asyncio>=3.4.3
+aiohttp>=3.9.1
+
+# Type Hints
+typing-extensions>=4.8.0
+
+# Utilities
+pytz>=2023.3  # Timezone support
+tqdm>=4.66.1  # Progress bars 
