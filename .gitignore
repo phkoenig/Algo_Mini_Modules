@@ -53,3 +53,6 @@ monitoring_metrics.json
 *.pickle
 *.csv
 *.xlsx 
+
+# Streamlit secrets
+.streamlit/secrets.toml 
