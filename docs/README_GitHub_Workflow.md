@@ -38,6 +38,30 @@ Bei der Arbeit mit Git und GitHub über die Kommandozeile können verschiedene H
 - Oder kurz: `git push -u origin <branch-name>`
 - Alternativ: Konfiguriere automatisches Tracking mit `git config --global push.autoSetupRemote true`
 
+### 4. Problem: Falsche oder fehlende Benutzeridentität
+
+**Symptome:**
+- Commits werden mit generischen oder falschen Namen/E-Mail-Adressen durchgeführt
+- In GitHub-Beitragsstatistiken taucht dein Name nicht oder falsch auf
+- Commits zeigen Namen wie "Your Name" oder "Unknown"
+
+**Lösungen:**
+- Globale Git-Konfiguration für Benutzername und E-Mail-Adresse einrichten:
+  ```bash
+  git config --global user.name "dein-username"
+  git config --global user.email "deine.email@example.com"
+  ```
+- Überprüfe die aktuelle Konfiguration:
+  ```bash
+  git config --global --get user.name
+  git config --global --get user.email
+  ```
+- Bei Windows-Problemen mit der Anzeige, verwende:
+  ```bash
+  git config --list --show-origin | findstr user
+  ```
+- Bei Zeichencodierungsproblemen (z.B. "K├Ânig" statt "König") einfache ASCII-Namen ohne Umlaute verwenden
+
 ## Best Practices für Git-Workflow
 
 ### Grundlegender Workflow
@@ -138,6 +162,30 @@ git push
 git fetch origin
 git reset --hard origin/master
 ```
+
+## Initial Setup einer neuen Arbeitsumgebung
+
+Bei der Einrichtung einer neuen Entwicklungsumgebung, z.B. auf einem neuen Computer, solltest du folgende Schritte durchführen:
+
+1. **Git installieren** (falls noch nicht vorhanden)
+2. **Persönliche Identität einrichten**:
+   ```bash
+   git config --global user.name "dein-username"  # z.B. "phkoenig" 
+   git config --global user.email "deine.email@example.com"  # z.B. "phkoenig@gmail.com"
+   ```
+3. **SSH-Key für GitHub einrichten** (optional, aber empfohlen):
+   ```bash
+   ssh-keygen -t ed25519 -C "deine.email@example.com"
+   # Den generierten Public Key zu deinem GitHub-Konto hinzufügen
+   ```
+4. **Nützliche globale Konfigurationen**:
+   ```bash
+   # Automatisches Tracking für neue Branches
+   git config --global push.autoSetupRemote true
+   
+   # Praktische Ausgabe ohne Pager (bei Windows-Problemen)
+   git config --global core.pager cat
+   ```
 
 ## Speziell für dieses Projekt
 
