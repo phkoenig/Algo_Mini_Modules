@@ -1,5 +1,5 @@
 """
-Streamlit GUI für Algo Trading
+GUI module for the Algo Trading application
 """
 
 __version__ = "0.1.0"
