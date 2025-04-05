@@ -251,16 +251,43 @@ class BitgetWebSocket:
             on_open=self.on_open,
             on_message=self.on_message,
             on_error=self.on_error,
-            on_close=self.on_close
+            on_close=self.on_close,
+            on_ping=self.on_ping,
+            on_pong=self.on_pong
         )
         
         # Starte WebSocket-Verbindung in einem separaten Thread
-        ws_thread = threading.Thread(target=self.ws.run_forever)
-        ws_thread.daemon = True
+        ws_thread = threading.Thread(target=self._run_forever)
+        ws_thread.daemon = False  # Non-daemon thread
         ws_thread.start()
         
         # Warte kurz, bis die Verbindung hergestellt ist
         time.sleep(1)
+    
+    def _run_forever(self):
+        """Führt die WebSocket-Verbindung aus und sendet regelmäßig Pings."""
+        try:
+            while True:
+                self.ws.run_forever()
+                if not self.connected:
+                    break
+                time.sleep(1)
+        except Exception as e:
+            logger.error(f"Error in WebSocket thread: {e}")
+        finally:
+            self.connected = False
+    
+    def on_ping(self, ws, message):
+        """Handler für eingehende Ping-Nachrichten."""
+        if self.verbose:
+            logger.debug(f"Received ping: {message}")
+        if self.ws:
+            self.ws.send("pong")
+    
+    def on_pong(self, ws, message):
+        """Handler für eingehende Pong-Nachrichten."""
+        if self.verbose:
+            logger.debug(f"Received pong: {message}")
 
 
 def is_valid_symbol(symbol: str) -> bool:

@@ -1,11 +1,14 @@
 # Browser Tools MCP Setup Guide
 
+
+
 ## Voraussetzungen
 
 - Node.js v20+ (getestet mit v20.14.0)
 - Chrome Browser
 - Streamlit App auf Port 8501
 - Browser Tools MCP Extension v1.2.0
+- Cursor IDE mit korrekter MCP Konfiguration
 
 ## Installation & Setup
 
@@ -15,14 +18,30 @@
 winget install OpenJS.NodeJS.LTS
 ```
 
-### 2. Browser-Tools-Server Installation
-```bash
-# Globale Installation
-npm install -g @agentdeskai/browser-tools-server@1.2.0
+### 2. Cursor MCP Konfiguration
+WICHTIG: Die korrekte Konfiguration in Cursor (Settings → MCP) ist entscheidend:
 
-# Server starten (WICHTIG: Als Administrator!)
-npx @agentdeskai/browser-tools-server@1.2.0 --port 3025 --log-level debug
+```json
+{
+  "mcpServers": {
+    "browser-tools": {
+      "type": "command",
+      "command": "cmd",
+      "args": ["/c", "npx", "@agentdeskai/browser-tools-server@1.2.0", "--port", "3025", "--log-level", "debug"],
+      "env": {
+        "PORT": "3025"
+      }
+    }
+  }
+}
 ```
+
+⚠️ Wichtige Konfigurationsdetails:
+- `command` MUSS `cmd` sein (nicht `npx` direkt)
+- `/c` Flag ist notwendig für Windows
+- Korrekte Paketversion: `browser-tools-server` (nicht `browser-tools-mcp`)
+- `--log-level debug` hilft beim Troubleshooting
+- Port muss in `args` UND `env` gesetzt werden
 
 ### 3. Chrome Extension Setup
 - Extension von [BrowserTools MCP v1.2.0](https://github.com/AgentDeskAI/browser-tools-mcp/releases/tag/v1.2.0) installieren
@@ -51,8 +70,8 @@ Füge folgende Konfiguration in den Cursor Settings (GUI) unter dem MCP-Bereich 
   "mcpServers": {
     "browser-tools": {
       "type": "command",
-      "command": "npx",
-      "args": ["-y", "@agentdeskai/browser-tools-mcp@1.2.0"],
+      "command": "cmd",
+      "args": ["/c", "npx", "@agentdeskai/browser-tools-server@1.2.0", "--port", "3025", "--log-level", "debug"],
       "env": {
         "PORT": "3025"
       }
@@ -192,3 +211,59 @@ Der Befehl "node" ist entweder falsch geschrieben oder konnte nicht gefunden wer
 - **04.04.2025**: 
   - Initiale MCP Setup-Dokumentation
   - Anti-Patterns dokumentiert
+
+## Korrekte Startreihenfolge
+
+1. Cursor IDE starten
+2. Sicherstellen, dass die MCP Konfiguration exakt wie oben angegeben ist
+3. Warten bis der MCP Server automatisch startet (Debug-Logs sollten erscheinen)
+4. Chrome mit der Extension öffnen
+5. In den Chrome DevTools prüfen ob "Connected" angezeigt wird
+6. Streamlit App starten:
+   ```bash
+   python -m streamlit run gui/login.py --server.port 8501
+   ```
+
+## Troubleshooting
+
+### Häufige Probleme
+
+1. **MCP Server startet nicht**
+   - Cursor MCP Konfiguration auf exakte Übereinstimmung prüfen
+   - Besonders auf `cmd` und `/c` Flag achten
+   - Debug-Logs in der Cursor Konsole prüfen
+
+2. **Verbindungsprobleme**
+   - Chrome Extension neu laden
+   - "Test Connection" klicken
+   - Debug-Logs auf Fehlermeldungen prüfen
+
+3. **Instabile Verbindung**
+   - Sicherstellen dass `browser-tools-server` (nicht mcp) verwendet wird
+   - Port-Konflikte durch `netstat -ano | findstr 3025` prüfen
+   - Nur eine Instanz von Cursor laufen lassen
+
+
+
+## ⚠️ WICHTIG: Startup-Sequenz
+
+Die folgende Befehlssequenz MUSS im internen Cursor-Terminal ausgeführt werden, NICHT in einem externen Terminal:
+
+```bash
+# 1. Alle laufenden Prozesse beenden
+taskkill /F /IM python.exe & taskkill /F /IM node.exe & exit
+
+# 2. MCP Server starten (im Hintergrund)
+cmd /c "npx -y @agentdeskai/browser-tools-server@1.2.0 --port 3025 --log-level debug & exit"
+
+# 3. Streamlit App starten (im Hintergrund)
+cmd /c "python -m streamlit run gui/login.py --server.port 8501 & exit"
+```
+
+> ⚡ **Kritische Hinweise zur Startup-Sequenz:**
+> - Befehle MÜSSEN im internen Cursor-Terminal ausgeführt werden
+> - Reihenfolge MUSS exakt eingehalten werden
+> - Zwischen den Befehlen warten, bis die Logs erscheinen
+> - MCP Server muss "Connected" melden, bevor Streamlit startet
+> - Externe Terminals oder PowerShell funktionieren NICHT
+> - Terminal-Fenster schließen sich automatisch nach erfolgreicher Ausführung
