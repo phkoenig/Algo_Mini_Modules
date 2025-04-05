@@ -1,0 +1,36 @@
+[theme]
+primaryColor = "#00FF00"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#005500"
+textColor = "#00FF00"
+font = "monospace"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+port = 8501
+address = "localhost"
+
+[runner]
+fastReruns = true
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = true
+
+[logger]
+level = "info"
+
+[global]
+developmentMode = false
+
+[deprecation]
+showfileUploaderEncoding = false
+
+[theme.streamlit]
+primaryColor = "#00FF00"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#005500"
+textColor = "#00FF00"
+font = "monospace" 

@@ -1,0 +1,22 @@
+:root {
+    --background-color: #0E1117;
+    --text-color: #00FF00;
+    --accent-color: #00BB00;
+    --secondary-color: #005500;
+    --highlight-color: #00FF40;
+}
+
+.stApp {
+    background-color: var(--background-color);
+}
+
+/* Text und Header */
+body, p, h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color) !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* Sidebar Navigation */
+.sidebar .sidebar-content {
+    background-color: var(--background-color);
+} 
