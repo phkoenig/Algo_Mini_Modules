@@ -13,6 +13,10 @@ def show():
     # Create sidebar
     create_sidebar()
     
+    # Initialize session state for active exchange if not exists
+    if 'active_exchange' not in st.session_state:
+        st.session_state.active_exchange = None
+    
     # Main content
     st.title("Account Connection")
     
@@ -20,9 +24,15 @@ def show():
     bitget_tab, kucoin_tab, bitunix_tab = st.tabs(["BitGet", "KuCoin", "BitUnix"])
     
     with bitget_tab:
-        # Add refresh button
-        if st.button("🔄 Refresh BitGet Data"):
-            st.rerun()
+        # Add buttons in columns
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🔄 Refresh BitGet Data"):
+                st.rerun()
+        with col2:
+            if st.button("🔌 Activate BitGet", type="primary" if st.session_state.active_exchange == "BitGet" else "secondary"):
+                st.session_state.active_exchange = "BitGet"
+                st.success("BitGet activated!")
             
         try:
             # Get BitGet credentials
@@ -101,9 +111,15 @@ def show():
                 st.warning("Please set up your BitGet API credentials in the .env file")
             
     with kucoin_tab:
-        # Add refresh button
-        if st.button("🔄 Refresh KuCoin Data"):
-            st.rerun()
+        # Add buttons in columns
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🔄 Refresh KuCoin Data"):
+                st.rerun()
+        with col2:
+            if st.button("🔌 Activate KuCoin", type="primary" if st.session_state.active_exchange == "KuCoin" else "secondary"):
+                st.session_state.active_exchange = "KuCoin"
+                st.success("KuCoin activated!")
             
         try:
             # Get KuCoin credentials
