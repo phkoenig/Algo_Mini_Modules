@@ -89,6 +89,18 @@ git pull origin master
 
 ## Best Practices für Git-Workflow
 
+### Pre-Commit Check
+```cmd
+# 1. Git-Status prüfen
+git status | type
+
+# 2. Prüfen ob Git initialisiert ist und Remote korrekt eingerichtet ist
+git remote -v
+
+# 3. Wenn keine Remote-Verbindung existiert:
+git remote add origin https://github.com/username/repository.git
+```
+
 ### Grundlegender Workflow
 
 ```cmd
@@ -106,6 +118,22 @@ git commit -m "Aussagekräftige Commit-Nachricht"
 
 # 5. Pushen
 git push
+```
+
+### Post-Push Verifikation (Optional)
+```cmd
+# 1. Lokalen und Remote-Stand vergleichen
+git fetch
+git status | type
+
+# 2. Detaillierte Unterschiede anzeigen (falls Status nicht clean)
+git diff origin/master | type
+
+# 3. Log der letzten Commits prüfen
+git log --oneline -n 5 | type
+
+# 4. Für kritische Änderungen: Liste aller Dateien im Remote
+git ls-tree -r --name-only origin/master | type
 ```
 
 ### Branching-Strategie
