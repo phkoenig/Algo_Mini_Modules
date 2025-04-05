@@ -1,22 +1,153 @@
 :root {
     --background-color: #0E1117;
-    --text-color: #00FF00;
-    --accent-color: #00BB00;
-    --secondary-color: #005500;
-    --highlight-color: #00FF40;
+    --text-color: #2c824f;
+    --accent-color: #00bb66;
+    --secondary-color: #00662e;
+    --highlight-color: #00FF66;
 }
 
 .stApp {
     background-color: var(--background-color);
 }
 
-/* Text und Header */
-body, p, h1, h2, h3, h4, h5, h6 {
+/* Grundlegende Typografie */
+.stApp, .stMarkdown, div[data-testid="stMetricValue"] > div, div[data-testid="stMetricLabel"] > label,
+.element-container, .stMarkdown p, .row-widget {
+    font-family: 'Courier New', monospace !important;
+    color: var(--text-color) !important;
+}
+
+/* Überschriften */
+.stMarkdown h1, div[data-testid="stHeader"] {
+    color: var(--text-color) !important;
+    font-size: 2rem !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+.stMarkdown h2, div[data-testid="stMarkdown"] h2 {
+    color: var(--accent-color) !important;
+    font-size: 1.5rem !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+.stMarkdown h3, div[data-testid="stMarkdown"] h3 {
+    color: var(--secondary-color) !important;
+    font-size: 1.2rem !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* Metriken */
+div[data-testid="stMetricLabel"] > label {
+    color: var(--accent-color) !important;
+    font-size: 1rem !important;
+}
+
+div[data-testid="stMetricValue"] > div {
+    color: var(--text-color) !important;
+    font-size: 1.8rem !important;
+}
+
+div[data-testid="stMetricDelta"] > div {
+    color: var(--highlight-color) !important;
+    font-size: 0.9rem !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* DataFrames und Tabellen */
+.stDataFrame {
+    font-family: 'Courier New', monospace !important;
+}
+
+.stDataFrame th, div[role="columnheader"] {
+    color: var(--accent-color) !important;
+    font-size: 1rem !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+.stDataFrame td, div[role="gridcell"] {
+    color: var(--text-color) !important;
+    font-size: 0.9rem !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* Tabellen-spezifische Styles */
+[data-testid="stTable"] table {
     color: var(--text-color) !important;
     font-family: 'Courier New', monospace !important;
 }
 
-/* Sidebar Navigation */
+[data-testid="stTable"] th {
+    color: var(--accent-color) !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+[data-testid="stTable"] td {
+    color: var(--text-color) !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* Sidebar */
 .sidebar .sidebar-content {
     background-color: var(--background-color);
+}
+
+.sidebar .sidebar-content *, .sidebar-content p {
+    color: var(--text-color) !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* Container Breite */
+.block-container {
+    max-width: 80% !important;
+    padding-left: 5rem;
+    padding-right: 5rem;
+}
+
+/* Tabs */
+button[data-baseweb="tab"], div[role="tablist"] button {
+    font-family: 'Courier New', monospace !important;
+    color: var(--text-color) !important;
+}
+
+[data-testid="stTabsContent"] {
+    font-family: 'Courier New', monospace !important;
+    color: var(--text-color) !important;
+}
+
+/* Links */
+a {
+    color: var(--accent-color) !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* Zusätzliche Elemente */
+.stHeadingContainer, div[data-testid="stVerticalBlock"] > div {
+    color: var(--text-color) !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* Status Text */
+div[data-testid="stMetricValue"], .metric-container {
+    color: var(--text-color) !important;
+}
+
+/* Alle Text-Elemente in der App */
+.stApp div, .stApp span, .stApp p {
+    color: var(--text-color) !important;
+}
+
+/* DataFrames Styling */
+div[data-testid="stDataFrame"] {
+    font-family: 'Courier New', monospace !important;
+}
+
+div[data-testid="stDataFrame"] div[role="cell"],
+div[data-testid="stDataFrame"] div[role="columnheader"] {
+    color: var(--text-color) !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* Spezielle Werte */
+.stMetric .value, .metric-value {
+    color: var(--text-color) !important;
 } 
