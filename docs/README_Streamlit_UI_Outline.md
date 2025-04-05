@@ -8,6 +8,53 @@
 - Dark Theme mit Matrix-/Hacker-Style verwenden.
 - Immer vorhandene Module aus der bestehenden Codebase aus dem Ordner "Modules" verwenden; keinen doppelten Code erzeugen.
 
+## Verzeichnisstruktur und Komponentenmanagement
+
+### GUI-Verzeichnisstruktur
+
+```
+gui/
+├── components/         # Wiederverwendbare UI-Komponenten
+│   └── sidebar.py     # Zentrale Sidebar-Komponente
+├── pages/             # Streamlit-Pages (automatisch in Navigation eingebunden)
+│   ├── 2_account_info.py
+│   ├── 3_trading_pairs.py
+│   └── ...
+├── static/           # Statische Assets
+│   └── css/         # CSS-Styling
+└── login.py         # Haupteinstiegspunkt der App
+
+```
+
+### Page-Management
+
+- Jede Page liegt im `pages/` Ordner
+- Numerierung bestimmt Reihenfolge in der Navigation (z.B. `2_account_info.py`)
+- Grundstruktur jeder Page:
+  ```python
+  import streamlit as st
+  from gui.utils import load_css, create_sidebar
+  
+  def show():
+      # Load CSS
+      load_css()
+      
+      # Create sidebar
+      create_sidebar()
+      
+      # Main content
+      st.title("Page Title")
+  
+  if __name__ == "__main__":
+      show()
+  ```
+
+### Sidebar-Management
+
+- Zentrale Sidebar-Komponente in `components/sidebar.py`
+- Wird über `utils.py` allen Pages zur Verfügung gestellt
+- Navigation wird automatisch von Streamlit aus den Pages generiert
+- Einheitliche Einstellungen über alle Pages hinweg
 
 ---
 
