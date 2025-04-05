@@ -35,6 +35,34 @@ npx @agentdeskai/browser-tools-server@1.2.0 --port 3025 --log-level debug
 Screenshot Path: B:\Nextcloud\CODE\proj\Algo_Mini_Modules\screenshots
 ```
 
+## Konfiguration
+
+### Cursor Settings (Aktuelle Methode)
+Die Konfiguration erfolgt ausschließlich über die Cursor IDE Settings (GUI). Eine separate JSON-Konfigurationsdatei in der Codebase ist nicht mehr erforderlich.
+
+> ⚠️ **Wichtiger Hinweis zur Konfiguration**  
+> Die Konfiguration erfolgt ausschließlich in den Cursor Settings. JSON-Konfigurationsdateien in der Codebase werden nicht mehr unterstützt.
+
+### MCP Server Konfiguration in Cursor Settings
+Füge folgende Konfiguration in den Cursor Settings (GUI) unter dem MCP-Bereich ein:
+
+```json
+{
+  "mcpServers": {
+    "browser-tools": {
+      "type": "command",
+      "command": "npx",
+      "args": ["-y", "@agentdeskai/browser-tools-mcp@1.2.0"],
+      "env": {
+        "PORT": "3025"
+      }
+    }
+  }
+}
+```
+
+Diese Konfiguration muss in den Cursor Settings vorgenommen werden, NICHT als separate Datei in der Codebase.
+
 ## Funktionen & Features
 
 ### Aktiv und getestet
@@ -43,12 +71,31 @@ Screenshot Path: B:\Nextcloud\CODE\proj\Algo_Mini_Modules\screenshots
 - [x] Console Logs
 - [x] Browser Integration
 - [x] Streamlit Integration
+- [x] Element Selection Tool
+- [x] Log Wiping
+- [x] Accessibility Audit
+- [x] Performance Audit
+- [x] SEO Audit
+- [x] Best Practices Audit
+- [x] Debugger Mode
+- [x] Audit Mode
 
-### Verfügbar aber optional
-- [ ] Accessibility Audit
-- [ ] Performance Audit
-- [ ] SEO Audit
-- [ ] Best Practices Audit
+### Audit Scores & Metriken
+- Accessibility: 0-100 Score mit detaillierten ARIA und Label Checks
+- Performance: LCP, FCP, CLS Metriken und Optimierungsvorschläge
+- SEO: Meta-Tags, robots.txt und sitemap.xml Validierung
+- Best Practices: JavaScript, Security und Browser Compatibility Checks
+
+### Verfügbare Modi
+1. **Debugger Mode**
+   - Systematische Problem-Analyse
+   - Console & Network Log Integration
+   - Step-by-Step Debugging Workflow
+
+2. **Audit Mode**
+   - Automatisierte Audit-Sequenz
+   - Comprehensive Analysis
+   - Optimization Planning
 
 ## Bekannte Einschränkungen
 - MCP Features nur über Chrome Extension zugänglich
@@ -89,6 +136,19 @@ Die Extension zeigt folgende Metriken:
 3. Streamlit auf Port 8501 starten
 4. Chrome DevTools offen halten für Monitoring
 5. "Allow Auto-paste to Cursor" aktivieren für bessere Integration
+6. Regelmäßige Audit-Durchführung:
+   - Accessibility Score > 90 anstreben
+   - Performance Score > 80 anstreben
+   - SEO Score > 90 anstreben
+   - Best Practices Score = 100 anstreben
+7. Log Management:
+   - Regelmäßiges Log Wiping durchführen
+   - Console Errors sofort beheben
+   - Network Errors tracken und analysieren
+8. Debugging Workflow:
+   - Debugger Mode für systematische Problemanalyse nutzen
+   - Audit Mode für regelmäßige Qualitätschecks einsetzen
+   - Element Selection für UI/UX Optimierung verwenden
 
 ## Anti-Patterns und bekannte Probleme
 
@@ -119,6 +179,15 @@ Der Befehl "node" ist entweder falsch geschrieben oder konnte nicht gefunden wer
 ```
 
 ## Änderungsprotokoll
+
+- **05.04.2025**:
+  - Audit-Funktionen als aktiv markiert
+  - Neue Features dokumentiert (Element Selection, Log Wiping)
+  - Audit Scores & Metriken hinzugefügt
+  - Best Practices für Auditing & Debugging ergänzt
+  - Debugger und Audit Mode dokumentiert
+  - Konfigurationshinweise präzisiert (Cursor Settings JSON-Format dokumentiert)
+  - Klarstellung: Konfiguration ausschließlich in Cursor Settings
 
 - **04.04.2025**: 
   - Initiale MCP Setup-Dokumentation
