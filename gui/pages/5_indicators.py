@@ -1,8 +1,12 @@
 import streamlit as st
+from gui.utils import load_css
 
 def show():
-    st.title("5. Technical Indicators")
-    st.write("Technical Indicators-Seite im Aufbau")
+    # Lade das CSS für einheitliches Styling
+    load_css()
+    
+    st.title("5. Indicators")
+    st.write("Indicators-Seite im Aufbau")
 
 # Wenn die Datei direkt ausgeführt wird
 if __name__ == "__main__":
