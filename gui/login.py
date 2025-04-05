@@ -1,24 +1,32 @@
 import streamlit as st
-from gui.utils import load_css, create_sidebar
+from gui.utils import load_css
+from gui.components.sidebar import create_sidebar
+
+# Erlaubte Emails aus README_Google_Auth.md
+ALLOWED_EMAILS = [
+    "phkoenig@gmail.com",
+    "philip@zepta.com", 
+    "carmenkoenig2412@gmail.com",
+    "karlvictorkoenig@gmail.com"
+]
 
 def main():
-    # Page config
-    st.set_page_config(
-        page_title="Algo Trading Dashboard",
-        page_icon="📈",
-        layout="wide",
-        initial_sidebar_state="expanded"
-    )
+    load_css()  # Nutzt existierendes CSS aus static/css
     
-    # Load CSS
-    load_css()
+    st.title("🔐 Login")
     
-    # Create sidebar
-    create_sidebar()
-    
-    # Main content
-    st.title("Welcome")
-    st.write("Welcome to the Algo Trading Dashboard")
+    # Simple Login-Logik
+    if not st.experimental_user.is_logged_in:  # Removed the parentheses
+        if st.button("🔑 Mit Google einloggen"):
+            st.login("google")
+    elif st.experimental_user.email in ALLOWED_EMAILS:
+        create_sidebar()  # Nutzt existierende Sidebar-Komponente
+        st.success(f"Willkommen, {st.experimental_user.name}!")
+        if st.button("🚪 Ausloggen"): 
+            st.logout()
+    else:
+        st.error("E-Mail nicht berechtigt")
+        st.button("↩️ Zurück", on_click=st.logout)
 
 if __name__ == "__main__":
     main()
