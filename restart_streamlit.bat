@@ -35,7 +35,7 @@ timeout /t 5 /nobreak >nul
 
 :: Start Streamlit in a visible window with activated venv
 echo [5/5] Starting Streamlit...
-start "Streamlit App" cmd /k "title Streamlit App && color 0B && cd /d %~dp0 && call venv\Scripts\activate.bat && echo Streamlit wird gestartet... && echo. && python -m streamlit run app.py --server.port 8501"
+start "Streamlit App" cmd /k "title Streamlit App && color 0B && cd /d %~dp0 && call venv\Scripts\activate.bat && echo Streamlit wird gestartet... && echo. && python -m streamlit run gui/app.py --server.port 8501"
 
 :: Wait for Streamlit to initialize
 timeout /t 3 /nobreak >nul

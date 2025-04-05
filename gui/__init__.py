@@ -1,7 +1,5 @@
 """
-WebSocket Data Explorer GUI
-
-Dieses Paket enthält die GUI-Komponenten und Utilities für die WebSocket Data Explorer App.
+Streamlit GUI für Algo Trading
 """
 
-__version__ = "1.0.0" 
+__version__ = "0.1.0" 

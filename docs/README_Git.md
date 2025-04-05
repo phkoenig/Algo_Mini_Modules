@@ -15,6 +15,25 @@ git remote -v
 git fetch && git status | type
 ```
 
+### Änderungen nach GitHub übertragen
+
+```cmd
+# 1. ALLE Änderungen stagen (neue, geänderte und gelöschte Dateien)
+git add -A
+
+# 2. Änderungen committen
+git commit -m "Beschreibende Nachricht über die Änderungen"
+
+# 3. Änderungen nach GitHub pushen
+git push
+```
+
+Wichtig: Immer `git add -A` verwenden, um sicherzustellen, dass:
+- Alle neuen Dateien getrackt werden
+- Alle Änderungen gestaged werden
+- Alle Löschungen berücksichtigt werden
+- Das GitHub-Repository exakt den lokalen Stand widerspiegelt
+
 ### Repository Informationen
 
 ```cmd
@@ -26,21 +45,6 @@ git ls-tree -r --name-only HEAD | type
 
 # Ungetrackte Dateien auflisten
 git ls-files --others --exclude-standard | type
-```
-
-### Änderungen durchführen
-
-```cmd
-# Dateien zum Commit hinzufügen
-git add dateiname
-# Alle Dateien hinzufügen
-git add .
-
-# Änderungen committen
-git commit -m "Beschreibende Nachricht über die Änderungen"
-
-# Änderungen nach GitHub pushen
-git push origin master
 ```
 
 ### Updates holen
@@ -107,11 +111,11 @@ git remote add origin https://github.com/username/repository.git
 # 1. Status prüfen
 git status | type
 
-# 2. Änderungen prüfen
+# 2. Änderungen prüfen (optional)
 git diff datei | type
 
-# 3. Änderungen stagen
-git add datei
+# 3. ALLE Änderungen stagen
+git add -A
 
 # 4. Committen
 git commit -m "Aussagekräftige Commit-Nachricht"
